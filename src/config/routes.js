@@ -15,9 +15,9 @@ module.exports = (app) => {
 
 
     ///// Capas /////
-    app.put('/upload/:id', capaController.save)
+    app.put('/upload/:id', auth, capaController.save)
 
-    app.get('/capa/:id', capaController.get)
+    app.get('/capa/:id', auth, capaController.get)
 
-    app.put('/upload/update/:id', capaController.update)
+    app.put('/upload/update/:id', auth, capaController.update)
 }
