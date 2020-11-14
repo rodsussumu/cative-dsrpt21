@@ -2,13 +2,13 @@ const User = require('../models/user-model')
 const bcrypt = require('bcrypt')
 const authConfig = require('../config/auth.json')
 const jwt = require('jsonwebtoken')
-const { update } = require('../../config/db/connection')
 
 module.exports = {
+
     async create(req, res) {
-        const { username, email, password } = req.body
+        const {email, password } = req.body
         try {
-            if(!username || !email || !password) return res.status(400).send({error: "Preencha todos os campos"})
+            if(!email || !password) return res.status(400).send({error: "Preencha todos os campos"})
 
             const userFromDb = await User.query().select().where('email', email).whereNull('deletedAt').first()
 
@@ -17,14 +17,13 @@ module.exports = {
             const hash = bcrypt.hashSync(password, 10)
 
             User.query().insert({
-                username: username,
                 email: email,
                 password: hash,
             }).then(resp => {
                 const token = jwt.sign({id: resp.id}, authConfig.secret, {
                     expiresIn: 86400,
                 })
-                return res.status(201).send({message: "Cadastrado com sucesso", id: resp.id, username: resp.username, email: resp.email, token: token})
+                return res.status(201).send({message: "Cadastrado com sucesso", id: resp.id, email: resp.email, token: token})
             })
         }catch(err) {
             console.log(err)
@@ -50,7 +49,6 @@ module.exports = {
             return res.status(200).send({
                 message: "Logado com sucesso",
                 id: userFromDb.id,
-                username: userFromDb.username,
                 email: userFromDb.email,
                 token: token
             })
@@ -78,7 +76,7 @@ module.exports = {
 
     async update(req, res) {
         const {id} = req.params
-        const { username, email, password } = req.body
+        const { email, password } = req.body
         try {
             const userFromDb = await User.query().select().where('id', id).whereNull('deletedAt').first()
 
@@ -87,7 +85,6 @@ module.exports = {
             const hash = bcrypt.hashSync(password, 10)
 
             await User.query().update({
-                username: username,
                 email: email,
                 password: hash,
                 updatedAt: new Date()

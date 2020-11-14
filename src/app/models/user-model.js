@@ -14,9 +14,9 @@ class User extends Model {
             required: [],
             properties: {
                 id: {type: 'integer'},
-                username: {type: 'string'},
                 email: {type: 'string'},
-                password: {type: 'string'}
+                password: {type: 'string'},
+                capaPath: {type: 'string'}
             }
         }
     }
