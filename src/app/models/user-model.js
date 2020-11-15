@@ -13,6 +13,7 @@ class User extends Model {
             type: 'object',
             required: [],
             properties: {
+                id: {type: 'integer'},
                 email: {type: 'string'},
                 password: {type: 'string'},
                 capaPath: {type: 'string'}
