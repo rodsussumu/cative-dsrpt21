@@ -41,8 +41,7 @@ module.exports = {
         const id = req.params.id
         try {
             const user = await User.query().where('id', id).first()
-            const rawdata = fs.readFileSync(user.capaPath)
-            const json = JSON.parse(rawdata)
+            const json = JSON.parse(user.capaPath)
             return res.status(200).send(json)
         }catch(err) {
             return res.status(500).send(err)
