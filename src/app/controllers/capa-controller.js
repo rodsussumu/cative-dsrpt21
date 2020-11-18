@@ -66,7 +66,7 @@ module.exports = {
                 const extension = files.capa.name.substr(files.capa.name.lastIndexOf("."));
                 const newPath = uploadDir+ '/' + Date.now() + extension;
 
-                fs.renameSync(files.capa.path, newPath)
+                await fs.renameSync(files.capa.path, newPath)
 
                 await User.query().update({
                     capaPath: newPath,
