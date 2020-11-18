@@ -72,7 +72,7 @@ module.exports = {
 
                 readStream.pipe(writeStream)
 
-                readStream.on("end", function() {
+                readStream.on("end", async function() {
                     await User.query().update({
                         capaPath: newPath,
                     }).where('id', id)
