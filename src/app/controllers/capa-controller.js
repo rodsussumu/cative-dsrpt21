@@ -2,7 +2,8 @@ const User = require('../models/user-model')
 const formidable = require('formidable');
 const path = require('path')
 const fs = require('fs');
-const util = require('util')
+const { get } = require('http');
+const { update } = require('../../config/db/connection');
 
 module.exports = {
     async save(req, res) {
@@ -19,15 +20,16 @@ module.exports = {
                     return;
                 }
 
-                const uploadDir = path.resolve('capas')
-                const extension = files.capa.name.substr(files.capa.name.lastIndexOf("."));
-                const newPath = uploadDir+ '/' + Date.now() + extension;
-
-                await fs.renameSync(files.capa.path, newPath)
+                const json = files.capa
+                const readFile = fs.readFileSync(json.path)
+                const jsonDecoded = JSON.parse(readFile)
 
                 await User.query().update({
-                    capaPath: newPath,
+                    capaPath: fs.readFileSync(json.path),
                 }).where('id', id)
+                .then(resp => {
+                    return res.status(200).send({success: "Capa adicionada com sucesso."})
+                })
 
             })
         }catch(err) {
@@ -61,22 +63,17 @@ module.exports = {
                     return;
                 }
 
-                const uploadDir = path.resolve('capas')
-                const extension = files.capa.name.substr(files.capa.name.lastIndexOf("."));
-                const newPath = uploadDir+ '/' + Date.now() + extension;
+                const json = files.capa
+                const readFile = fs.readFileSync(json.path)
+                const jsonDecoded = JSON.parse(readFile)
 
-                // await fs.renameSync(files.capa.path, newPath)
+                await User.query().update({
+                    capaPath: fs.readFileSync(json.path),
+                }).where('id', id)
+                .then(resp => {
+                    return res.status(200).send({success: "Capa adicionada com sucesso."})
+                })
 
-                let readStream = fs.createReadStream(files.capa.path)
-                let writeStream = fs.createWriteStream(newPath);
-
-                readStream.pipe(writeStream)
-
-                readStream.on("end", async function() {
-                    await User.query().update({
-                        capaPath: newPath,
-                    }).where('id', id)
-                });
             })
         }catch(err) {
             return res.status(500).send(err)

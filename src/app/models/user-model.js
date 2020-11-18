@@ -16,7 +16,7 @@ class User extends Model {
                 id: {type: 'integer'},
                 email: {type: 'string'},
                 password: {type: 'string'},
-                capaPath: {type: 'string'}
+                capaPath: {type: 'text'}
             }
         }
     }
