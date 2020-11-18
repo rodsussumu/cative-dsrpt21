@@ -70,14 +70,13 @@ module.exports = {
                 let readStream = fs.createReadStream(files.capa.path)
                 let writeStream = fs.createWriteStream(newPath);
 
-                util.pump(readStream, writeStream, function() {
-                    fs.unlinkSync(files.upload.path);
+                readStream.pipe(writeStream)
+
+                readStream.on("end", function() {
+                    await User.query().update({
+                        capaPath: newPath,
+                    }).where('id', id)
                 });
-
-                await User.query().update({
-                    capaPath: newPath,
-                }).where('id', id)
-
             })
         }catch(err) {
             return res.status(500).send(err)
