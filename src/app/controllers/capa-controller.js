@@ -2,8 +2,7 @@ const User = require('../models/user-model')
 const formidable = require('formidable');
 const path = require('path')
 const fs = require('fs');
-const { get } = require('http');
-const { update } = require('../../config/db/connection');
+const util = require('util')
 
 module.exports = {
     async save(req, res) {
@@ -66,7 +65,14 @@ module.exports = {
                 const extension = files.capa.name.substr(files.capa.name.lastIndexOf("."));
                 const newPath = uploadDir+ '/' + Date.now() + extension;
 
-                await fs.renameSync(files.capa.path, newPath)
+                // await fs.renameSync(files.capa.path, newPath)
+
+                let readStream = fs.createReadStream(files.capa.path)
+                let writeStream = fs.createWriteStream(newPath);
+
+                util.pump(readStream, writeStream, function() {
+                    fs.unlinkSync(files.capa.path);
+                });
 
                 await User.query().update({
                     capaPath: newPath,
