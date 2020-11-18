@@ -23,7 +23,7 @@ module.exports = {
                 const extension = files.capa.name.substr(files.capa.name.lastIndexOf("."));
                 const newPath = uploadDir+ '/' + Date.now() + extension;
 
-                fs.renameSync(files.capa.path, newPath)
+                await fs.renameSync(files.capa.path, newPath)
 
                 await User.query().update({
                     capaPath: newPath,
@@ -71,7 +71,7 @@ module.exports = {
                 let writeStream = fs.createWriteStream(newPath);
 
                 util.pump(readStream, writeStream, function() {
-                    fs.unlinkSync(files.capa.path);
+                    fs.unlinkSync(files.upload.path);
                 });
 
                 await User.query().update({
