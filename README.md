@@ -33,4 +33,9 @@ npx knex migrate:latest
 yarn start
 ```
 
+## Hospedado no heroku 
+* https://cative-dsrpt21.herokuapp.com/
+
+## Documentação do postman
+* https://documenter.getpostman.com/view/11227384/TVep7nJ6
 
